@@ -1,0 +1,307 @@
+#![deny(
+    warnings,
+    missing_copy_implementations,
+    trivial_casts,
+    trivial_numeric_casts,
+    unsafe_code,
+    unstable_features,
+    unused_import_braces,
+    unused_qualifications,
+    missing_docs
+)]
+
+//! Tweening animation plugin for the Bevy game engine
+//!
+//! This library provides interpolation-based animation between ("tweening") two values, for a variety
+//! of Bevy components and assets. Each field of a component or asset can be animated via a collection
+//! or predefined easing functions, or providing a custom animation curve.
+//! 
+//! # Example
+//! 
+//! Add the tweening plugin to your app:
+//! 
+//! ```rust
+//! # use bevy::prelude::*;
+//! # use bevy_tweening::*;
+//! AppBuilder::default()
+//!     .add_default_plugins()
+//!     .add_plugin(TweeningPlugin)
+//!     .run();
+//! ```
+//! 
+//! Animate the position ([`Transform::translation`]) of an [`Entity`]:
+//! 
+//! ```rust
+//! # use bevy_tweening::*;
+//! # use std::time::Duration;
+//! commands
+//!     // Spawn a Sprite entity to animate the position of
+//!     .spawn_bundle(SpriteBundle {
+//!         material: materials.add(Color::RED.into()),
+//!         sprite: Sprite {
+//!             size: Vec2::new(size, size),
+//!             ..Default::default()
+//!         },
+//!         ..Default::default()
+//!     })
+//!     // Add an Animator component to perform the animation
+//!     .insert(Animator::new(
+//!         // Use a quadratic easing on both endpoints
+//!         EaseFunction::QuadraticInOut,
+//!         // Loop animation back and forth over 1 second, with a 0.5 second
+//!         // pause after each cycle (start -> end -> start).
+//!         TweeningType::PingPong {
+//!             duration: Duration::from_secs(1),
+//!             pause: Some(Duration::from_millis(500)),
+//!         },
+//!         // The lens gives access to the Transform component of the Sprite,
+//!         // for the Animator to animate it. It also contains the start and
+//!         // end values associated with the animation ratios 0. and 1.
+//!         TransformPositionLens {
+//!             start: Vec3::new(0., 0., 0.),
+//!             end: Vec3::new(1., 2., -4.),
+//!         },
+//!     ));
+//! ```
+//! 
+//! # Animators and lenses
+//! 
+//! Bevy components and assets are animated with tweening animator components. Those animators determine
+//! the fields to animate using lenses.
+//! 
+//! ## Components animation
+//! 
+//! Components are animated with the [`Animator`] component, which is generic over the type of component
+//! it animates. This is a restriction imposed by Bevy, to access the animated component as a mutable
+//! reference via a [`Query`] and comply with the ECS rules.
+//! 
+//! The [`Animator`] itself is not generic over the subset of fields of the components it animates.
+//! This limits the proliferation of generic types when animating e.g. both the position and rotation
+//! of an entity.
+//! 
+//! ## Assets animation
+//! 
+//! Assets are animated in a similar way to component, via the [`AssetAnimator`] component. Because assets
+//! are typically shared, and the animation applies to the asset itself, all users of the asset see the
+//! animation. For example, animating the color of a [`ColorMaterial`] will change the color of all [`Sprite`]
+//! components using that material.
+//! 
+//! ## Lenses
+//! 
+//! Both [`Animator`] and [`AssetAnimator`] access the field(s) to animate via a lens, a type that implements
+//! the [`Lens`] trait. Several predefined lenses are provided for the most commonly animated fields, like the
+//! components of a [`Transform`]. A custom lens can also be created by implementing the trait, allowing to
+//! animate virtually any field of any Bevy component or asset.
+//! 
+//! [`Transform::translation`]: bevy::transform::components::Transform::translation
+//! [`Entity`]: bevy::ecs::entity::Entity
+//! [`Query`]: bevy::ecs::system::Query
+//! [`ColorMaterial`]: bevy::sprite::ColorMaterial
+//! [`Sprite`]: bevy::sprite::Sprite
+//! [`Transform`]: bevy::transform::components::Transform
+
+use std::time::Duration;
+
+use bevy::{asset::Asset, prelude::*};
+
+use interpolation::Ease as IEase;
+pub use interpolation::EaseFunction;
+pub use interpolation::Lerp;
+
+mod lens;
+mod plugin;
+
+pub use lens::{
+    ColorMaterialColorLens, Lens, TextColorLens, TransformPositionLens, TransformRotationLens,
+    TransformScaleLens, UiPositionLens,
+};
+pub use plugin::TweeningPlugin;
+
+/// How should this easing loop repeat
+#[derive(Clone, Copy)]
+pub enum TweeningType {
+    /// Only happen once
+    Once {
+        /// duration of the easing
+        duration: Duration,
+    },
+    /// Looping, restarting from the start once finished
+    Loop {
+        /// duration of the easing
+        duration: Duration,
+        /// duration of the pause between two loops
+        pause: Option<Duration>,
+    },
+    /// Repeat the animation back and forth
+    PingPong {
+        /// duration of the easing
+        duration: Duration,
+        /// duration of the pause before starting again in the other direction
+        pause: Option<Duration>,
+    },
+}
+
+/// Playback state of an animator.
+#[derive(PartialEq, Eq, Debug, Clone, Copy)]
+pub enum AnimatorState {
+    /// The animation is playing.
+    Playing,
+    /// The animation is paused/stopped.
+    Paused,
+}
+
+impl std::ops::Not for AnimatorState {
+    type Output = AnimatorState;
+
+    fn not(self) -> Self::Output {
+        match self {
+            AnimatorState::Paused => AnimatorState::Playing,
+            AnimatorState::Playing => AnimatorState::Paused,
+        }
+    }
+}
+
+/// Describe how eased value should be computed.
+#[derive(Clone, Copy)]
+pub enum EaseMethod {
+    /// Follow `EaseFunction`.
+    EaseFunction(EaseFunction),
+    /// Linear interpolation, with no function.
+    Linear,
+    /// Discrete interpolation, eased value will jump from start to end when
+    /// stepping over the discrete limit.
+    Discrete(f32),
+    /// Use a custom function to interpolate the value.
+    CustomFunction(fn(f32) -> f32),
+}
+
+impl EaseMethod {
+    fn sample(self, x: f32) -> f32 {
+        match self {
+            EaseMethod::EaseFunction(function) => x.calc(function),
+            EaseMethod::Linear => x,
+            EaseMethod::Discrete(limit) => {
+                if x > limit {
+                    1.
+                } else {
+                    0.
+                }
+            }
+            EaseMethod::CustomFunction(function) => function(x),
+        }
+    }
+}
+
+impl Into<EaseMethod> for EaseFunction {
+    fn into(self) -> EaseMethod {
+        EaseMethod::EaseFunction(self)
+    }
+}
+
+/// Component to control the animation of another component.
+pub struct Animator<T> {
+    ease_function: EaseMethod,
+    timer: Timer,
+    /// Control if this animation is played or not.
+    pub state: AnimatorState,
+    paused: bool,
+    tweening_type: TweeningType,
+    direction: i16,
+    lens: Box<dyn Lens<T> + Send + Sync + 'static>,
+}
+
+impl<T: std::fmt::Debug> std::fmt::Debug for Animator<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Animator")
+            .field("state", &self.state)
+            .finish()
+    }
+}
+
+impl<T> Animator<T> {
+    /// Create a new animator component from an easing function, tweening type, and a lens.
+    /// The type `T` of the component to animate can generally be deducted from the lens type itself.
+    pub fn new<L>(ease_function: impl Into<EaseMethod>, tweening_type: TweeningType, lens: L) -> Self
+    where
+        L: Lens<T> + Send + Sync + 'static,
+    {
+        Animator {
+            ease_function: ease_function.into(),
+            timer: match tweening_type {
+                TweeningType::Once { duration } => Timer::new(duration, false),
+                TweeningType::Loop { duration, .. } => Timer::new(duration, false),
+                TweeningType::PingPong { duration, .. } => Timer::new(duration, false),
+            },
+            state: AnimatorState::Playing,
+            paused: false,
+            tweening_type,
+            direction: 1,
+            lens: Box::new(lens),
+        }
+    }
+
+    #[inline(always)]
+    fn apply(&mut self, target: &mut T, ratio: f32) {
+        self.lens.lerp(target, ratio);
+    }
+}
+
+/// Component to control the animation of an asset.
+pub struct AssetAnimator<T: Asset> {
+    ease_function: EaseMethod,
+    timer: Timer,
+    /// Control if this animation is played or not.
+    pub state: AnimatorState,
+    paused: bool,
+    tweening_type: TweeningType,
+    direction: i16,
+    lens: Box<dyn Lens<T> + Send + Sync + 'static>,
+    handle: Handle<T>,
+}
+
+impl<T: Asset + std::fmt::Debug> std::fmt::Debug for AssetAnimator<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("AssetAnimator")
+            .field("state", &self.state)
+            .finish()
+    }
+}
+
+impl<T: Asset> AssetAnimator<T> {
+    /// Create a new asset animator component from an easing function, tweening type, and a lens.
+    /// The type `T` of the asset to animate can generally be deducted from the lens type itself.
+    /// The component can be attached on any entity.
+    pub fn new<L>(
+        handle: Handle<T>,
+        ease_function: impl Into<EaseMethod>,
+        tweening_type: TweeningType,
+        lens: L,
+    ) -> Self
+    where
+        L: Lens<T> + Send + Sync + 'static,
+    {
+        AssetAnimator {
+            ease_function: ease_function.into(),
+            timer: match tweening_type {
+                TweeningType::Once { duration } => Timer::new(duration, false),
+                TweeningType::Loop { duration, .. } => Timer::new(duration, false),
+                TweeningType::PingPong { duration, .. } => Timer::new(duration, false),
+            },
+            state: AnimatorState::Playing,
+            paused: false,
+            tweening_type,
+            direction: 1,
+            lens: Box::new(lens),
+            handle,
+        }
+    }
+
+    fn handle(&self) -> Handle<T> {
+        self.handle.clone()
+    }
+
+    #[inline(always)]
+    fn apply(&mut self, target: &mut T, ratio: f32) {
+        self.lens.lerp(target, ratio);
+    }
+}

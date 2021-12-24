@@ -1,0 +1,36 @@
+[package]
+name = "bevy_tweening"
+version = "0.1.0"
+authors = ["François Mockers <mockersf@gmail.com>", "Jerome Humbert <djeedai@gmail.com>"]
+edition = "2018"
+description = "Tweening plugin for Bevy"
+repository = "https://github.com/djeedai/bevy_extra"
+homepage = "https://github.com/djeedai/bevy_extra/tree/master/crates/bevy_tweening"
+documentation = "https://docs.rs/bevy_tweening"
+keywords = ["bevy", "animation", "easing", "tweening"]
+license = "MIT"
+readme = "README.md"
+exclude = ["examples/*.gif"]
+
+[dependencies]
+interpolation = "0.2"
+
+[dependencies.bevy]
+version = "0.5"
+default-features = false
+features = [ "render" ]
+
+[[example]]
+name = "colormaterial_color"
+required-features = [ "bevy/bevy_winit", "bevy/bevy_wgpu" ]
+
+[[example]]
+name = "transform_translation"
+required-features = [ "bevy/bevy_winit", "bevy/bevy_wgpu" ]
+
+[[example]]
+name = "transform_rotation"
+required-features = [ "bevy/bevy_winit", "bevy/bevy_wgpu" ]
+
+[workspace]
+members = [".", "benchmarks/"]
