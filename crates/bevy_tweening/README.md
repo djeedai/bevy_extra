@@ -107,17 +107,17 @@ The process is similar to custom components, creating a custom lens for the cust
 
 ## Examples
 
-See the [`examples/`](https://github.com/djeedai/bevy_extra/tree/master/bevy_tweening/examples) folder.
+See the [`examples/`](https://github.com/djeedai/bevy_extra/tree/main/bevy_tweening/examples) folder.
 
-![colormaterial_color](https://raw.githubusercontent.com/djeedai/bevy_extra/master/bevy_tweening/examples/colormaterial_color.gif)
+<!-- ![colormaterial_color](https://raw.githubusercontent.com/djeedai/bevy_extra/main/bevy_tweening/examples/colormaterial_color.gif)
 
-![sprite_size](https://raw.githubusercontent.com/djeedai/bevy_extra/master/bevy_tweening/examples/sprite_size.gif)
+![sprite_size](https://raw.githubusercontent.com/djeedai/bevy_extra/main/bevy_tweening/examples/sprite_size.gif)
 
-![transform_translation](https://raw.githubusercontent.com/djeedai/bevy_extra/master/bevy_tweening/examples/transform_translation.gif)
+![transform_translation](https://raw.githubusercontent.com/djeedai/bevy_extra/main/bevy_tweening/examples/transform_translation.gif)
 
-![transform_rotation](https://raw.githubusercontent.com/djeedai/bevy_extra/master/bevy_tweening/examples/transform_rotation.gif)
+![transform_rotation](https://raw.githubusercontent.com/djeedai/bevy_extra/main/bevy_tweening/examples/transform_rotation.gif)
 
-![transform_scale](https://raw.githubusercontent.com/djeedai/bevy_extra/master/bevy_tweening/examples/transform_scale.gif)
+![transform_scale](https://raw.githubusercontent.com/djeedai/bevy_extra/main/bevy_tweening/examples/transform_scale.gif) -->
 
 ## Ease Functions
 
