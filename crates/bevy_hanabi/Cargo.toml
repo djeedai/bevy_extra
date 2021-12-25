@@ -1,0 +1,30 @@
+[package]
+name = "bevy_hanabi"
+version = "0.0.1"
+authors = ["Jerome Humbert <djeedai@gmail.com>"]
+edition = "2021"
+description = "Hanabi particle system plugin for Bevy"
+repository = "https://github.com/djeedai/bevy_extra"
+homepage = "https://github.com/djeedai/bevy_extra/tree/main/crates/bevy_hanabi"
+documentation = "https://docs.rs/bevy_hanabi"
+keywords = ["bevy", "particle-system", "particles"]
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+exclude = ["examples/*.gif"]
+
+[dependencies]
+bytemuck = "1.5"
+
+[dependencies.bevy]
+version = "0.5"
+git = "https://github.com/bevyengine/bevy"
+branch = "main"
+default-features = false
+features = [ "render" ]
+
+[[example]]
+name = "spawn"
+required-features = [ "bevy/bevy_winit" ]
+
+[workspace]
+members = ["."]
