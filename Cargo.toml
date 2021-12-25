@@ -1,4 +1,5 @@
 [workspace]
 members = [
-  "crates/bevy_tweening"
+  "crates/bevy_tweening",
+  "crates/bevy_hanabi"
 ]
