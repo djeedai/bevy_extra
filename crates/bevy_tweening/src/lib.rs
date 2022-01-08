@@ -112,8 +112,8 @@ mod lens;
 mod plugin;
 
 pub use lens::{
-    Lens, SpriteColorLens, TextColorLens, TransformPositionLens, TransformRotationLens,
-    TransformScaleLens, UiPositionLens,
+    ColorMaterialColorLens, Lens, SpriteColorLens, TextColorLens, TransformPositionLens,
+    TransformRotationLens, TransformScaleLens, UiPositionLens,
 };
 pub use plugin::TweeningPlugin;
 

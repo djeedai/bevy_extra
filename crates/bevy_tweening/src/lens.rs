@@ -142,6 +142,25 @@ impl Lens<Style> for UiPositionLens {
     }
 }
 
+/// A lens to manipulate the [`color`] field of a [`ColorMaterial`] asset.
+///
+/// [`color`]: bevy::sprite::ColorMaterial::color
+/// [`ColorMaterial`]: bevy::sprite::ColorMaterial
+#[derive(Debug, Copy, Clone, PartialEq)]
+pub struct ColorMaterialColorLens {
+    /// Start color.
+    pub start: Color,
+    /// End color.
+    pub end: Color,
+}
+
+impl Lens<ColorMaterial> for ColorMaterialColorLens {
+    fn lerp(&mut self, target: &mut ColorMaterial, ratio: f32) {
+        let value = self.start + (self.end + self.start * -1.) * ratio;
+        target.color = value;
+    }
+}
+
 /// A lens to manipulate the [`color`] field of a [`Sprite`] asset.
 ///
 /// [`color`]: bevy::sprite::Sprite::color

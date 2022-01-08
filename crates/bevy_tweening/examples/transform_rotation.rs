@@ -1,7 +1,5 @@
 use bevy::prelude::*;
 
-use bevy_tweening::*;
-
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     App::default()
         .add_plugins(DefaultPlugins)

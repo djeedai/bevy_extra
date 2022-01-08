@@ -21,6 +21,10 @@ default-features = false
 features = [ "render" ]
 
 [[example]]
+name = "colormaterial_color"
+required-features = [ "bevy/bevy_winit" ]
+
+[[example]]
 name = "sprite_color"
 required-features = [ "bevy/bevy_winit" ]
 

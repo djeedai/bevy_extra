@@ -1,4 +1,7 @@
-use bevy::prelude::*;
+use bevy::{
+    prelude::*,
+    sprite::{MaterialMesh2dBundle, Mesh2dHandle},
+};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     App::default()
@@ -10,7 +13,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn setup(mut commands: Commands) {
+fn setup(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
+) {
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
 
     let size = 100.;
@@ -20,6 +27,8 @@ fn setup(mut commands: Commands) {
     let screen_y = 150.;
     let mut x = -screen_x;
     let mut y = screen_y;
+
+    let quad_mesh: Mesh2dHandle = meshes.add(Mesh::from(shape::Quad::default())).into();
 
     for ease_function in &[
         bevy_tweening::EaseFunction::QuadraticIn,
@@ -53,23 +62,28 @@ fn setup(mut commands: Commands) {
         bevy_tweening::EaseFunction::BounceOut,
         bevy_tweening::EaseFunction::BounceInOut,
     ] {
+        // Create a unique material per entity, so that it can be animated
+        // without affecting the other entities. Note that we could share
+        // that material among multiple entities, and animating the material
+        // asset would change the color of all entities using that material.
+        let unique_material = materials.add(Color::BLACK.into());
+
         commands
-            .spawn_bundle(SpriteBundle {
-                transform: Transform::from_translation(Vec3::new(x, y, 0.)),
-                sprite: Sprite {
-                    color: Color::BLACK,
-                    custom_size: Some(Vec2::new(size, size)),
-                    ..Default::default()
-                },
+            .spawn_bundle(MaterialMesh2dBundle {
+                mesh: quad_mesh.clone(),
+                transform: Transform::from_translation(Vec3::new(x, y, 0.))
+                    .with_scale(Vec3::splat(100.)),
+                material: unique_material.clone(),
                 ..Default::default()
             })
-            .insert(bevy_tweening::Animator::new(
+            .insert(bevy_tweening::AssetAnimator::new(
+                unique_material.clone(),
                 *ease_function,
                 bevy_tweening::TweeningType::PingPong {
                     duration: std::time::Duration::from_secs(1),
                     pause: Some(std::time::Duration::from_millis(500)),
                 },
-                bevy_tweening::SpriteColorLens {
+                bevy_tweening::ColorMaterialColorLens {
                     start: Color::RED,
                     end: Color::BLUE,
                 },
