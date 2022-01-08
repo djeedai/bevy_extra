@@ -37,9 +37,9 @@
 //! commands
 //!     // Spawn a Sprite entity to animate the position of
 //!     .spawn_bundle(SpriteBundle {
-//!         material: materials.add(Color::RED.into()),
 //!         sprite: Sprite {
-//!             size: Vec2::new(size, size),
+//!             color: Color::RED,
+//!             custom_size: Some(Vec2::new(size, size)),
 //!             ..Default::default()
 //!         },
 //!         ..Default::default()
@@ -83,8 +83,8 @@
 //!
 //! Assets are animated in a similar way to component, via the [`AssetAnimator`] component. Because assets
 //! are typically shared, and the animation applies to the asset itself, all users of the asset see the
-//! animation. For example, animating the color of a [`ColorMaterial`] will change the color of all [`Sprite`]
-//! components using that material.
+//! animation. For example, animating the color of a [`ColorMaterial`] will change the color of all the
+//! 2D meshes using that material.
 //!
 //! ## Lenses
 //!
