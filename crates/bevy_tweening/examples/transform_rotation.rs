@@ -6,7 +6,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     App::default()
         .add_plugins(DefaultPlugins)
         .add_plugin(bevy_tweening::TweeningPlugin)
-        .add_startup_system(setup.system())
+        .add_startup_system(setup)
         .run();
 
     Ok(())

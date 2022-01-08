@@ -8,11 +8,11 @@ pub struct TweeningPlugin;
 
 impl Plugin for TweeningPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(component_animator_system::<Transform>.system())
-            .add_system(component_animator_system::<Text>.system())
-            .add_system(component_animator_system::<Style>.system())
-            .add_system(component_animator_system::<Sprite>.system())
-            .add_system(asset_animator_system::<ColorMaterial>.system());
+        app.add_system(component_animator_system::<Transform>)
+            .add_system(component_animator_system::<Text>)
+            .add_system(component_animator_system::<Style>)
+            .add_system(component_animator_system::<Sprite>)
+            .add_system(asset_animator_system::<ColorMaterial>);
     }
 }
 
