@@ -15,22 +15,22 @@
 //! This library provides interpolation-based animation between ("tweening") two values, for a variety
 //! of Bevy components and assets. Each field of a component or asset can be animated via a collection
 //! or predefined easing functions, or providing a custom animation curve.
-//! 
+//!
 //! # Example
-//! 
+//!
 //! Add the tweening plugin to your app:
-//! 
+//!
 //! ```rust
 //! # use bevy::prelude::*;
 //! # use bevy_tweening::*;
-//! AppBuilder::default()
+//! App::default()
 //!     .add_default_plugins()
 //!     .add_plugin(TweeningPlugin)
 //!     .run();
 //! ```
-//! 
+//!
 //! Animate the position ([`Transform::translation`]) of an [`Entity`]:
-//! 
+//!
 //! ```rust
 //! # use bevy_tweening::*;
 //! # use std::time::Duration;
@@ -63,36 +63,36 @@
 //!         },
 //!     ));
 //! ```
-//! 
+//!
 //! # Animators and lenses
-//! 
+//!
 //! Bevy components and assets are animated with tweening animator components. Those animators determine
 //! the fields to animate using lenses.
-//! 
+//!
 //! ## Components animation
-//! 
+//!
 //! Components are animated with the [`Animator`] component, which is generic over the type of component
 //! it animates. This is a restriction imposed by Bevy, to access the animated component as a mutable
 //! reference via a [`Query`] and comply with the ECS rules.
-//! 
+//!
 //! The [`Animator`] itself is not generic over the subset of fields of the components it animates.
 //! This limits the proliferation of generic types when animating e.g. both the position and rotation
 //! of an entity.
-//! 
+//!
 //! ## Assets animation
-//! 
+//!
 //! Assets are animated in a similar way to component, via the [`AssetAnimator`] component. Because assets
 //! are typically shared, and the animation applies to the asset itself, all users of the asset see the
 //! animation. For example, animating the color of a [`ColorMaterial`] will change the color of all [`Sprite`]
 //! components using that material.
-//! 
+//!
 //! ## Lenses
-//! 
+//!
 //! Both [`Animator`] and [`AssetAnimator`] access the field(s) to animate via a lens, a type that implements
 //! the [`Lens`] trait. Several predefined lenses are provided for the most commonly animated fields, like the
 //! components of a [`Transform`]. A custom lens can also be created by implementing the trait, allowing to
 //! animate virtually any field of any Bevy component or asset.
-//! 
+//!
 //! [`Transform::translation`]: bevy::transform::components::Transform::translation
 //! [`Entity`]: bevy::ecs::entity::Entity
 //! [`Query`]: bevy::ecs::system::Query
@@ -112,7 +112,7 @@ mod lens;
 mod plugin;
 
 pub use lens::{
-    ColorMaterialColorLens, Lens, TextColorLens, TransformPositionLens, TransformRotationLens,
+    Lens, SpriteColorLens, TextColorLens, TransformPositionLens, TransformRotationLens,
     TransformScaleLens, UiPositionLens,
 };
 pub use plugin::TweeningPlugin;
@@ -199,6 +199,7 @@ impl Into<EaseMethod> for EaseFunction {
 }
 
 /// Component to control the animation of another component.
+#[derive(Component)]
 pub struct Animator<T> {
     ease_function: EaseMethod,
     timer: Timer,
@@ -221,7 +222,11 @@ impl<T: std::fmt::Debug> std::fmt::Debug for Animator<T> {
 impl<T> Animator<T> {
     /// Create a new animator component from an easing function, tweening type, and a lens.
     /// The type `T` of the component to animate can generally be deducted from the lens type itself.
-    pub fn new<L>(ease_function: impl Into<EaseMethod>, tweening_type: TweeningType, lens: L) -> Self
+    pub fn new<L>(
+        ease_function: impl Into<EaseMethod>,
+        tweening_type: TweeningType,
+        lens: L,
+    ) -> Self
     where
         L: Lens<T> + Send + Sync + 'static,
     {
@@ -247,6 +252,7 @@ impl<T> Animator<T> {
 }
 
 /// Component to control the animation of an asset.
+#[derive(Component)]
 pub struct AssetAnimator<T: Asset> {
     ease_function: EaseMethod,
     timer: Timer,

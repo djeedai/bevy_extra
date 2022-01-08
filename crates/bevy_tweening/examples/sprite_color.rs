@@ -1,9 +1,7 @@
 use bevy::prelude::*;
 
-use bevy_tweening::*;
-
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    AppBuilder::default()
+    App::default()
         // .insert_resource(bevy::log::LogSettings {
         //     level: bevy::log::Level::ERROR,
         //     filter: "bevy_tweening=trace".to_string(),
@@ -16,7 +14,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
+fn setup(mut commands: Commands) {
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
 
     let size = 100.;
@@ -59,30 +57,23 @@ fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
         bevy_tweening::EaseFunction::BounceOut,
         bevy_tweening::EaseFunction::BounceInOut,
     ] {
-        // Create a unique material per entity, so that it can be animated
-        // without affecting the other entities. Note that we could share
-        // that material among multiple entities, and animating the material
-        // asset would change the color of all entities using that material.
-        let unique_material = materials.add(Color::BLACK.into());
-
         commands
             .spawn_bundle(SpriteBundle {
-                material: unique_material.clone(),
                 transform: Transform::from_translation(Vec3::new(x, y, 0.)),
                 sprite: Sprite {
-                    size: Vec2::new(size, size),
+                    color: Color::BLACK,
+                    custom_size: Some(Vec2::new(size, size)),
                     ..Default::default()
                 },
                 ..Default::default()
             })
-            .insert(bevy_tweening::AssetAnimator::new(
-                unique_material.clone(),
+            .insert(bevy_tweening::Animator::new(
                 *ease_function,
                 bevy_tweening::TweeningType::PingPong {
                     duration: std::time::Duration::from_secs(1),
                     pause: Some(std::time::Duration::from_millis(500)),
                 },
-                bevy_tweening::ColorMaterialColorLens {
+                bevy_tweening::SpriteColorLens {
                     start: Color::RED,
                     end: Color::BLUE,
                 },

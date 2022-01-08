@@ -1,8 +1,8 @@
 [package]
 name = "bevy_tweening"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["François Mockers <mockersf@gmail.com>", "Jerome Humbert <djeedai@gmail.com>"]
-edition = "2018"
+edition = "2021"
 description = "Tweening plugin for Bevy"
 repository = "https://github.com/djeedai/bevy_extra"
 homepage = "https://github.com/djeedai/bevy_extra/tree/main/crates/bevy_tweening"
@@ -16,21 +16,22 @@ exclude = ["examples/*.gif"]
 interpolation = "0.2"
 
 [dependencies.bevy]
-version = "0.5"
+version = "0.6"
 default-features = false
 features = [ "render" ]
 
 [[example]]
-name = "colormaterial_color"
-required-features = [ "bevy/bevy_winit", "bevy/bevy_wgpu" ]
+name = "sprite_color"
+required-features = [ "bevy/bevy_winit" ]
 
 [[example]]
 name = "transform_translation"
-required-features = [ "bevy/bevy_winit", "bevy/bevy_wgpu" ]
+required-features = [ "bevy/bevy_winit" ]
 
 [[example]]
 name = "transform_rotation"
-required-features = [ "bevy/bevy_winit", "bevy/bevy_wgpu" ]
+required-features = [ "bevy/bevy_winit" ]
 
 [workspace]
+resolver = "2"
 members = [".", "benchmarks/"]

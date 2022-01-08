@@ -1,0 +1,19 @@
+# Changelog
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [0.2.0] - 2022-01-08
+
+### Changed
+
+- Update to Bevy 0.6
+- Update to rust edition 2021
+- Force Cargo resolver v2
+- Replaced `ColorMaterialColorLens` with `SpriteColorLens` since the color of a `Sprite` is now an intrinsic property of the component, and does not use materials anymore. Users wanting to animate a `ColorMaterial::color` can create a custom lens.
+
+## [0.1.0] - 2021-12-24
+
+Initial version for Bevy 0.5
