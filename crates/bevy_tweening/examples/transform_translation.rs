@@ -2,6 +2,13 @@ use bevy::prelude::*;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     App::default()
+        .insert_resource(WindowDescriptor {
+            title: "TransformPositionLens".to_string(),
+            width: 1400.,
+            height: 600.,
+            vsync: true,
+            ..Default::default()
+        })
         .add_plugins(DefaultPlugins)
         .add_plugin(bevy_tweening::TweeningPlugin)
         .add_startup_system(setup)
@@ -17,7 +24,7 @@ fn setup(mut commands: Commands) {
 
     let spacing = 1.5;
     let screen_x = 570.;
-    let screen_y = 300.;
+    let screen_y = 150.;
     let mut x = -screen_x;
 
     for ease_function in &[

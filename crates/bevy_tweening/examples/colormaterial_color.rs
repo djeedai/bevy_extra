@@ -5,6 +5,13 @@ use bevy::{
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     App::default()
+        .insert_resource(WindowDescriptor {
+            title: "ColorMaterialColorLens".to_string(),
+            width: 1200.,
+            height: 600.,
+            vsync: true,
+            ..Default::default()
+        })
         .add_plugins(DefaultPlugins)
         .add_plugin(bevy_tweening::TweeningPlugin)
         .add_startup_system(setup)
@@ -20,11 +27,11 @@ fn setup(
 ) {
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
 
-    let size = 100.;
+    let size = 80.;
 
     let spacing = 1.25;
-    let screen_x = 570.;
-    let screen_y = 150.;
+    let screen_x = 450.;
+    let screen_y = 120.;
     let mut x = -screen_x;
     let mut y = screen_y;
 
@@ -72,7 +79,7 @@ fn setup(
             .spawn_bundle(MaterialMesh2dBundle {
                 mesh: quad_mesh.clone(),
                 transform: Transform::from_translation(Vec3::new(x, y, 0.))
-                    .with_scale(Vec3::splat(100.)),
+                    .with_scale(Vec3::splat(size)),
                 material: unique_material.clone(),
                 ..Default::default()
             })

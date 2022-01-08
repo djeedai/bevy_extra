@@ -2,6 +2,13 @@ use bevy::prelude::*;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     App::default()
+        .insert_resource(WindowDescriptor {
+            title: "SpriteColorLens".to_string(),
+            width: 1200.,
+            height: 600.,
+            vsync: true,
+            ..Default::default()
+        })
         .add_plugins(DefaultPlugins)
         .add_plugin(bevy_tweening::TweeningPlugin)
         .add_startup_system(setup)
@@ -13,11 +20,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 fn setup(mut commands: Commands) {
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
 
-    let size = 100.;
+    let size = 80.;
 
     let spacing = 1.25;
-    let screen_x = 570.;
-    let screen_y = 150.;
+    let screen_x = 450.;
+    let screen_y = 120.;
     let mut x = -screen_x;
     let mut y = screen_y;
 

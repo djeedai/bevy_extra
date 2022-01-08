@@ -2,6 +2,13 @@ use bevy::prelude::*;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     App::default()
+        .insert_resource(WindowDescriptor {
+            title: "TransformRotationLens".to_string(),
+            width: 1400.,
+            height: 600.,
+            vsync: true,
+            ..Default::default()
+        })
         .add_plugins(DefaultPlugins)
         .add_plugin(bevy_tweening::TweeningPlugin)
         .add_startup_system(setup)
@@ -74,7 +81,7 @@ fn setup(mut commands: Commands) {
                             duration: std::time::Duration::from_secs(1),
                             pause: Some(std::time::Duration::from_millis(500)),
                         },
-                        TransformRotationLens {
+                        bevy_tweening::TransformRotationLens {
                             start: Quat::IDENTITY,
                             end: Quat::from_axis_angle(Vec3::Z, std::f32::consts::PI / 2.),
                         },
