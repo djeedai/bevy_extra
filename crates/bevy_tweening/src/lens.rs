@@ -5,26 +5,26 @@ use bevy::prelude::*;
 /// The lens takes a `target` component or asset from a query, as a mutable reference,
 /// and animates (tweens) a subet of the fields of the component/asset based on the
 /// linear ratio `ratio`, already sampled from the easing curve.
-/// 
+///
 /// # Example
-/// 
+///
 /// Implement `Lens` for a custom type:
-/// 
+///
 /// ```rust
 /// struct MyLens {
 ///   start: f32,
 ///   end: f32,
 /// }
-/// 
+///
 /// struct MyStruct(f32);
-/// 
+///
 /// impl Lens<MyStruct> for MyLens {
 ///   fn lerp(&mut self, target: &mut MyStruct, ratio: f32) {
 ///     target.0 = self.start + (self.end - self.start) * ratio;
 ///   }
 /// }
 /// ```
-/// 
+///
 pub trait Lens<T> {
     /// Perform a linear interpolation (lerp) over the subset of fields of a component
     /// or asset the lens focuses on, based on the linear ratio `ratio`. The `target`
@@ -125,19 +125,15 @@ pub struct UiPositionLens {
 
 fn lerp_val(start: &Val, end: &Val, ratio: f32) -> Val {
     match (start, end) {
-        (Val::Percent(start), Val::Percent(end)) => {
-            Val::Percent(start + (end - start) * ratio)
-        }
-        (Val::Px(start), Val::Px(end)) => {
-            Val::Px(start + (end - start) * ratio)
-        }
+        (Val::Percent(start), Val::Percent(end)) => Val::Percent(start + (end - start) * ratio),
+        (Val::Px(start), Val::Px(end)) => Val::Px(start + (end - start) * ratio),
         _ => *start,
     }
 }
 
 impl Lens<Style> for UiPositionLens {
     fn lerp(&mut self, target: &mut Style, ratio: f32) {
-        target.position = Rect{
+        target.position = Rect {
             left: lerp_val(&self.start.left, &self.end.left, ratio),
             right: lerp_val(&self.start.right, &self.end.right, ratio),
             top: lerp_val(&self.start.top, &self.end.top, ratio),
@@ -146,22 +142,21 @@ impl Lens<Style> for UiPositionLens {
     }
 }
 
-/// A lens to manipulate the [`color`] field of a [`ColorMaterial`] asset.
+/// A lens to manipulate the [`color`] field of a [`Sprite`] asset.
 ///
-/// [`color`]: bevy::sprite::ColorMaterial::color
-/// [`ColorMaterial`]: bevy::sprite::ColorMaterial
+/// [`color`]: bevy::sprite::Sprite::color
+/// [`Sprite`]: bevy::sprite::Sprite
 #[derive(Debug, Copy, Clone, PartialEq)]
-pub struct ColorMaterialColorLens {
+pub struct SpriteColorLens {
     /// Start color.
     pub start: Color,
     /// End color.
     pub end: Color,
 }
 
-impl Lens<ColorMaterial> for ColorMaterialColorLens {
-    fn lerp(&mut self, target: &mut ColorMaterial, ratio: f32) {
+impl Lens<Sprite> for SpriteColorLens {
+    fn lerp(&mut self, target: &mut Sprite, ratio: f32) {
         let value = self.start + (self.end + self.start * -1.) * ratio;
         target.color = value;
     }
 }
-

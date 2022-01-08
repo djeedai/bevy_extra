@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
-  #[test]
-  fn dummy() {
-    assert!(true);
-  }
+    #[test]
+    fn dummy() {
+        assert!(true);
+    }
 }
