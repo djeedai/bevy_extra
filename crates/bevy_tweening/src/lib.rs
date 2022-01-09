@@ -93,12 +93,12 @@
 //! components of a [`Transform`]. A custom lens can also be created by implementing the trait, allowing to
 //! animate virtually any field of any Bevy component or asset.
 //!
-//! [`Transform::translation`]: bevy::transform::components::Transform::translation
-//! [`Entity`]: bevy::ecs::entity::Entity
-//! [`Query`]: bevy::ecs::system::Query
-//! [`ColorMaterial`]: bevy::sprite::ColorMaterial
-//! [`Sprite`]: bevy::sprite::Sprite
-//! [`Transform`]: bevy::transform::components::Transform
+//! [`Transform::translation`]: https://docs.rs/bevy/0.6.0/bevy/transform/components/struct.Transform.html#structfield.translation
+//! [`Entity`]: https://docs.rs/bevy/0.6.0/bevy/ecs/entity/struct.Entity.html
+//! [`Query`]: https://docs.rs/bevy/0.6.0/bevy/ecs/system/struct.Query.html
+//! [`ColorMaterial`]: https://docs.rs/bevy/0.6.0/bevy/sprite/struct.ColorMaterial.html
+//! [`Sprite`]: https://docs.rs/bevy/0.6.0/bevy/sprite/struct.Sprite.html
+//! [`Transform`]: https://docs.rs/bevy/0.6.0/bevy/transform/components/struct.Transform.html
 
 use std::time::Duration;
 

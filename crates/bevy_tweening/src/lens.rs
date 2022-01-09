@@ -16,6 +16,7 @@ use bevy::prelude::*;
 ///   end: f32,
 /// }
 ///
+/// #[derive(Component)]
 /// struct MyStruct(f32);
 ///
 /// impl Lens<MyStruct> for MyLens {
@@ -35,8 +36,8 @@ pub trait Lens<T> {
 
 /// A lens to manipulate the [`color`] field of a section of a [`Text`] component.
 ///
-/// [`color`]: bevy::text::TextStyle::color
-/// [`Text`]: bevy::text::Text
+/// [`color`]: https://docs.rs/bevy/0.6.0/bevy/text/struct.TextStyle.html#structfield.color
+/// [`Text`]: https://docs.rs/bevy/0.6.0/bevy/text/struct.Text.html
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct TextColorLens {
     /// Start color.
@@ -56,8 +57,8 @@ impl Lens<Text> for TextColorLens {
 
 /// A lens to manipulate the [`translation`] field of a [`Transform`] component.
 ///
-/// [`translation`]: bevy::transform::components::Transform::translation
-/// [`Transform`]: bevy::transform::components::Transform
+/// [`translation`]: https://docs.rs/bevy/0.6.0/bevy/transform/components/struct.Transform.html#structfield.translation
+/// [`Transform`]: https://docs.rs/bevy/0.6.0/bevy/transform/components/struct.Transform.html
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct TransformPositionLens {
     /// Start value of the translation.
@@ -75,8 +76,8 @@ impl Lens<Transform> for TransformPositionLens {
 
 /// A lens to manipulate the [`rotation`] field of a [`Transform`] component.
 ///
-/// [`rotation`]: bevy::transform::components::Transform::rotation
-/// [`Transform`]: bevy::transform::components::Transform
+/// [`rotation`]: https://docs.rs/bevy/0.6.0/bevy/transform/components/struct.Transform.html#structfield.rotation
+/// [`Transform`]: https://docs.rs/bevy/0.6.0/bevy/transform/components/struct.Transform.html
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct TransformRotationLens {
     /// Start value of the rotation.
@@ -94,8 +95,8 @@ impl Lens<Transform> for TransformRotationLens {
 
 /// A lens to manipulate the [`scale`] field of a [`Transform`] component.
 ///
-/// [`scale`]: bevy::transform::components::Transform::scale
-/// [`Transform`]: bevy::transform::components::Transform
+/// [`scale`]: https://docs.rs/bevy/0.6.0/bevy/transform/components/struct.Transform.html#structfield.scale
+/// [`Transform`]: https://docs.rs/bevy/0.6.0/bevy/transform/components/struct.Transform.html
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct TransformScaleLens {
     /// Start value of the scale.
@@ -113,8 +114,8 @@ impl Lens<Transform> for TransformScaleLens {
 
 /// A lens to manipulate the [`position`] field of a UI [`Style`] component.
 ///
-/// [`position`]: bevy::ui::Style::position
-/// [`Style`]: bevy::ui::Style
+/// [`position`]: https://docs.rs/bevy/0.6.0/bevy/ui/struct.Style.html#structfield.position
+/// [`Style`]: https://docs.rs/bevy/0.6.0/bevy/ui/struct.Style.html
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct UiPositionLens {
     /// Start position.
@@ -144,8 +145,8 @@ impl Lens<Style> for UiPositionLens {
 
 /// A lens to manipulate the [`color`] field of a [`ColorMaterial`] asset.
 ///
-/// [`color`]: bevy::sprite::ColorMaterial::color
-/// [`ColorMaterial`]: bevy::sprite::ColorMaterial
+/// [`color`]: https://docs.rs/bevy/0.6.0/bevy/sprite/struct.ColorMaterial.html#structfield.color
+/// [`ColorMaterial`]: https://docs.rs/bevy/0.6.0/bevy/sprite/struct.ColorMaterial.html
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct ColorMaterialColorLens {
     /// Start color.
@@ -163,8 +164,8 @@ impl Lens<ColorMaterial> for ColorMaterialColorLens {
 
 /// A lens to manipulate the [`color`] field of a [`Sprite`] asset.
 ///
-/// [`color`]: bevy::sprite::Sprite::color
-/// [`Sprite`]: bevy::sprite::Sprite
+/// [`color`]: https://docs.rs/bevy/0.6.0/bevy/sprite/struct.Sprite.html#structfield.color
+/// [`Sprite`]: https://docs.rs/bevy/0.6.0/bevy/sprite/struct.Sprite.html
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct SpriteColorLens {
     /// Start color.
