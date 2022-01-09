@@ -152,7 +152,7 @@ impl SpecializedPipeline for ParticlesPipeline {
             },
             depth_stencil: None,
             multisample: MultisampleState {
-                count: 1,
+                count: 4, // TODO: use Msaa
                 mask: !0,
                 alpha_to_coverage_enabled: false,
             },
@@ -503,6 +503,7 @@ pub fn queue_particles(
                     },
                     entity,
                     sort_key: FloatOrd(batch.z),
+                    batch_range: None,
                 });
             }
         }

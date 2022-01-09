@@ -22,8 +22,8 @@ pub struct HanabiPlugin;
 impl Plugin for HanabiPlugin {
     fn build(&self, app: &mut App) {
         // Register the spawn and update systems
-        app.add_system(hanabi_spawn.system())
-            .add_system(hanabi_update.system());
+        app.add_system(hanabi_spawn)
+            .add_system(hanabi_update);
 
         // Register the particles shader
         let mut shaders = app.world.get_resource_mut::<Assets<Shader>>().unwrap();
