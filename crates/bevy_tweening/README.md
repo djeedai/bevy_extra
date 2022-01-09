@@ -110,7 +110,7 @@ The process is similar to custom components, creating a custom lens for the cust
 
 ## Examples
 
-See the [`examples/`](https://github.com/djeedai/bevy_extra/tree/main/bevy_tweening/examples) folder.
+See the [`examples/`](https://github.com/djeedai/bevy_extra/tree/main/crates/bevy_tweening/examples) folder.
 
 ### [`sprite_color`](examples/sprite_color.rs)
 
