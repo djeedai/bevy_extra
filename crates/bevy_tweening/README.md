@@ -118,7 +118,7 @@ See the [`examples/`](https://github.com/djeedai/bevy_extra/tree/main/crates/bev
 cargo run --example sprite_color --features="bevy/bevy_winit"
 ```
 
-![sprite_color](examples/sprite_color.gif)
+![sprite_color](https://raw.githubusercontent.com/djeedai/bevy_extra/main/crates/bevy_tweening/examples/sprite_color.gif)
 
 ### [`transform_rotation`](examples/transform_rotation.rs)
 
@@ -126,7 +126,7 @@ cargo run --example sprite_color --features="bevy/bevy_winit"
 cargo run --example transform_rotation --features="bevy/bevy_winit"
 ```
 
-![sprite_color](examples/transform_rotation.gif)
+![sprite_color](https://raw.githubusercontent.com/djeedai/bevy_extra/main/crates/bevy_tweening/examples/transform_rotation.gif)
 
 ### [`transform_translation`](examples/transform_translation.rs)
 
@@ -134,7 +134,7 @@ cargo run --example transform_rotation --features="bevy/bevy_winit"
 cargo run --example transform_translation --features="bevy/bevy_winit"
 ```
 
-![sprite_color](examples/transform_translation.gif)
+![sprite_color](https://raw.githubusercontent.com/djeedai/bevy_extra/main/crates/bevy_tweening/examples/transform_translation.gif)
 
 ### [`colormaterial_color`](examples/colormaterial_color.rs)
 
@@ -142,7 +142,7 @@ cargo run --example transform_translation --features="bevy/bevy_winit"
 cargo run --example colormaterial_color --features="bevy/bevy_winit"
 ```
 
-![colormaterial_color](examples/colormaterial_color.gif)
+![colormaterial_color](https://raw.githubusercontent.com/djeedai/bevy_extra/main/crates/bevy_tweening/examples/colormaterial_color.gif)
 
 ## Ease Functions
 
