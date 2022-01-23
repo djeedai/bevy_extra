@@ -11,6 +11,8 @@ use bevy::prelude::*;
 /// Implement `Lens` for a custom type:
 ///
 /// ```rust
+/// # use bevy::prelude::*;
+/// # use bevy_tweening::*;
 /// struct MyLens {
 ///   start: f32,
 ///   end: f32,

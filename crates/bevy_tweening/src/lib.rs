@@ -24,7 +24,7 @@
 //! # use bevy::prelude::*;
 //! # use bevy_tweening::*;
 //! App::default()
-//!     .add_default_plugins()
+//!     .add_plugins(DefaultPlugins)
 //!     .add_plugin(TweeningPlugin)
 //!     .run();
 //! ```
@@ -32,8 +32,11 @@
 //! Animate the position ([`Transform::translation`]) of an [`Entity`]:
 //!
 //! ```rust
+//! # use bevy::prelude::*;
 //! # use bevy_tweening::*;
 //! # use std::time::Duration;
+//! # fn system(mut commands: Commands) {
+//! # let size = 16.;
 //! commands
 //!     // Spawn a Sprite entity to animate the position of
 //!     .spawn_bundle(SpriteBundle {
@@ -62,6 +65,7 @@
 //!             end: Vec3::new(1., 2., -4.),
 //!         },
 //!     ));
+//! # }
 //! ```
 //!
 //! # Animators and lenses
