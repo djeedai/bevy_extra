@@ -139,7 +139,7 @@ impl Lens<Style> for UiPositionLens {
             right: lerp_val(&self.start.right, &self.end.right, ratio),
             top: lerp_val(&self.start.top, &self.end.top, ratio),
             bottom: lerp_val(&self.start.bottom, &self.end.bottom, ratio),
-        }
+        };
     }
 }
 

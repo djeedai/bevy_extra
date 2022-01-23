@@ -144,6 +144,14 @@ cargo run --example colormaterial_color --features="bevy/bevy_winit"
 
 ![colormaterial_color](https://raw.githubusercontent.com/djeedai/bevy_extra/main/crates/bevy_tweening/examples/colormaterial_color.gif)
 
+### [`ui_position`](examples/ui_position.rs)
+
+```rust
+cargo run --example ui_position --features="bevy/bevy_winit"
+```
+
+![ui_position](https://raw.githubusercontent.com/djeedai/bevy_extra/main/crates/bevy_tweening/examples/ui_position.gif)
+
 ## Ease Functions
 
 Many [ease functions](https://docs.rs/interpolation/0.2.0/interpolation/enum.EaseFunction.html) are available:

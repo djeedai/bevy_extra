@@ -36,6 +36,10 @@ required-features = [ "bevy/bevy_winit" ]
 name = "transform_rotation"
 required-features = [ "bevy/bevy_winit" ]
 
+[[example]]
+name = "ui_position"
+required-features = [ "bevy/bevy_winit" ]
+
 [workspace]
 resolver = "2"
 members = [".", "benchmarks/"]
