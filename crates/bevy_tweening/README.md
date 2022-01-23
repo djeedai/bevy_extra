@@ -187,6 +187,17 @@ Many [ease functions](https://docs.rs/interpolation/0.2.0/interpolation/enum.Eas
 - BounceOut
 - BounceInOut
 
+## Compatible Bevy versions
+
+The `main` branch is compatible with the latest Bevy release.
+
+Compatibility of `bevy_tweening` versions:
+
+| `bevy_tweening` | `bevy` |
+| :--             | :--    |
+| `0.2`           | `0.6`  |
+| `0.1`           | `0.5`  |
+
 ## Comparison with `bevy_easings`
 
 The `bevy_tweening` library started as a fork of [the `bevy_easings` library by François Mocker](https://github.com/mockersf/bevy_extra/blob/master/bevy_easings), with the goals to:
