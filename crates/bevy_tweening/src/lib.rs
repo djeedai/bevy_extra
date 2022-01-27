@@ -202,6 +202,30 @@ impl Into<EaseMethod> for EaseFunction {
     }
 }
 
+/// Direction a tweening animation is playing.
+///
+/// For all but [`TweeningType::PingPong`] this is always [`TweeningDirection::Forward`]. For the
+/// [`TweeningType::PingPong`] tweening type, this is either forward (from start to end; ping) or
+/// backward (from end to start; pong).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum TweeningDirection {
+    /// Animation playing from start to end.
+    Forward,
+    /// Animation playing from end to start.
+    Backward,
+}
+
+impl std::ops::Not for TweeningDirection {
+    type Output = TweeningDirection;
+
+    fn not(self) -> Self::Output {
+        match self {
+            TweeningDirection::Forward => TweeningDirection::Backward,
+            TweeningDirection::Backward => TweeningDirection::Forward,
+        }
+    }
+}
+
 /// Component to control the animation of another component.
 #[derive(Component)]
 pub struct Animator<T> {
@@ -211,7 +235,7 @@ pub struct Animator<T> {
     pub state: AnimatorState,
     paused: bool,
     tweening_type: TweeningType,
-    direction: i16,
+    direction: TweeningDirection,
     lens: Box<dyn Lens<T> + Send + Sync + 'static>,
 }
 
@@ -244,8 +268,37 @@ impl<T> Animator<T> {
             state: AnimatorState::Playing,
             paused: false,
             tweening_type,
-            direction: 1,
+            direction: TweeningDirection::Forward,
             lens: Box::new(lens),
+        }
+    }
+
+    /// A boolean indicating whether the animation is currently in the pause phase of a loop.
+    ///
+    /// The [`TweeningType::Loop`] and [`TweeningType::PingPong`] tweening types are looping over
+    /// infinitely, with an optional pause between each loop. This function returns `true` if the
+    /// animation is currently under such pause. For [`TweeningType::Once`], which has no pause,
+    /// this always returns `false`.
+    pub fn is_paused(&self) -> bool {
+        self.paused
+    }
+
+    /// The current animation direction.
+    ///
+    /// See [`TweeningDirection`] for details.
+    pub fn direction(&self) -> TweeningDirection {
+        self.direction
+    }
+
+    /// Current animation progress ratio between 0 and 1.
+    ///
+    /// For reversed playback ([`TweeningDirection::Backward`]), the ratio goes from 0 at the
+    /// end point (beginning of backward playback) to 1 at the start point (end of backward
+    /// playback).
+    pub fn progress(&self) -> f32 {
+        match self.direction {
+            TweeningDirection::Forward => self.timer.percent(),
+            TweeningDirection::Backward => self.timer.percent_left(),
         }
     }
 
@@ -264,7 +317,7 @@ pub struct AssetAnimator<T: Asset> {
     pub state: AnimatorState,
     paused: bool,
     tweening_type: TweeningType,
-    direction: i16,
+    direction: TweeningDirection,
     lens: Box<dyn Lens<T> + Send + Sync + 'static>,
     handle: Handle<T>,
 }
@@ -300,9 +353,38 @@ impl<T: Asset> AssetAnimator<T> {
             state: AnimatorState::Playing,
             paused: false,
             tweening_type,
-            direction: 1,
+            direction: TweeningDirection::Forward,
             lens: Box::new(lens),
             handle,
+        }
+    }
+
+    /// A boolean indicating whether the animation is currently in the pause phase of a loop.
+    ///
+    /// The [`TweeningType::Loop`] and [`TweeningType::PingPong`] tweening types are looping over
+    /// infinitely, with an optional pause between each loop. This function returns `true` if the
+    /// animation is currently under such pause. For [`TweeningType::Once`], which has no pause,
+    /// this always returns `false`.
+    pub fn is_paused(&self) -> bool {
+        self.paused
+    }
+
+    /// The current animation direction.
+    ///
+    /// See [`TweeningDirection`] for details.
+    pub fn direction(&self) -> TweeningDirection {
+        self.direction
+    }
+
+    /// Current animation progress ratio between 0 and 1.
+    ///
+    /// For reversed playback ([`TweeningDirection::Backward`]), the ratio goes from 0 at the
+    /// end point (beginning of backward playback) to 1 at the start point (end of backward
+    /// playback).
+    pub fn progress(&self) -> f32 {
+        match self.direction {
+            TweeningDirection::Forward => self.timer.percent(),
+            TweeningDirection::Backward => self.timer.percent_left(),
         }
     }
 
@@ -313,5 +395,47 @@ impl<T: Asset> AssetAnimator<T> {
     #[inline(always)]
     fn apply(&mut self, target: &mut T, ratio: f32) {
         self.lens.lerp(target, ratio);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn animator_new() {
+        let animator = Animator::new(
+            EaseFunction::QuadraticInOut,
+            TweeningType::PingPong {
+                duration: std::time::Duration::from_secs(1),
+                pause: Some(std::time::Duration::from_millis(500)),
+            },
+            TransformRotationLens {
+                start: Quat::IDENTITY,
+                end: Quat::from_axis_angle(Vec3::Z, std::f32::consts::PI / 2.),
+            },
+        );
+        assert_eq!(animator.is_paused(), false);
+        assert_eq!(animator.direction(), TweeningDirection::Forward);
+        assert_eq!(animator.progress(), 0.);
+    }
+
+    #[test]
+    fn asset_animator_new() {
+        let animator = AssetAnimator::new(
+            Handle::<ColorMaterial>::default(),
+            EaseFunction::QuadraticInOut,
+            TweeningType::PingPong {
+                duration: std::time::Duration::from_secs(1),
+                pause: Some(std::time::Duration::from_millis(500)),
+            },
+            ColorMaterialColorLens {
+                start: Color::RED,
+                end: Color::BLUE,
+            },
+        );
+        assert_eq!(animator.is_paused(), false);
+        assert_eq!(animator.direction(), TweeningDirection::Forward);
+        assert_eq!(animator.progress(), 0.);
     }
 }

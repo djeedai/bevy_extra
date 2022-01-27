@@ -42,11 +42,7 @@ pub fn component_animator_system<T: Component>(
             }
         } else {
             if animator.timer.duration().as_secs_f32() != 0. {
-                let progress = if animator.direction.is_positive() {
-                    animator.timer.percent()
-                } else {
-                    animator.timer.percent_left()
-                };
+                let progress = animator.progress();
                 let factor = animator.ease_function.sample(progress);
                 animator.apply(target, factor);
             }
@@ -68,7 +64,7 @@ pub fn component_animator_system<T: Component>(
                             animator.paused = true;
                         }
                         animator.timer.reset();
-                        animator.direction *= -1;
+                        animator.direction = !animator.direction;
                     }
                 }
             }
@@ -103,11 +99,7 @@ pub fn asset_animator_system<T: Asset>(
             }
         } else {
             if animator.timer.duration().as_secs_f32() != 0. {
-                let progress = if animator.direction.is_positive() {
-                    animator.timer.percent()
-                } else {
-                    animator.timer.percent_left()
-                };
+                let progress = animator.progress();
                 let factor = animator.ease_function.sample(progress);
                 if let Some(target) = assets.get_mut(animator.handle()) {
                     animator.apply(target, factor);
@@ -131,7 +123,7 @@ pub fn asset_animator_system<T: Asset>(
                             animator.paused = true;
                         }
                         animator.timer.reset();
-                        animator.direction *= -1;
+                        animator.direction = !animator.direction;
                     }
                 }
             }

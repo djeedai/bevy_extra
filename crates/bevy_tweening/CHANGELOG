@@ -5,6 +5,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `Animator<T>::is_paused()` and `AssetAnimator<T>::is_paused()` to query when a tweening animation is in its pause phase, if any.
+- Add `Animator<T>::direction()` and `AssetAnimator<T>::direction()` to query the playback direction of a tweening animation (forward or backward).
+- Add `Animator<T>::progress()` and `AssetAnimator<T>::progress()` to query the progres ratio in [0:1] of a tweening animation.
+
 ## [0.2.0] - 2022-01-09
 
 ### Changed
