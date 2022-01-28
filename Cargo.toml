@@ -1,6 +1,0 @@
-[workspace]
-resolver = "2"
-members = [
-  "crates/bevy_tweening",
-  "crates/bevy_hanabi"
-]
